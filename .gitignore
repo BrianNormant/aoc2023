@@ -3,3 +3,4 @@
 bin
 **/.unison*
 **/*.txt
+**/cc.h
