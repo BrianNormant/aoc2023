@@ -1,0 +1,9 @@
+clean:
+	rm ./bin/**
+
+c:
+	gcc -Wall -Wextra -pedantic -g -fsanitize=undefined,address main.c -o ./bin/mainc
+	./bin/mainc puzzle.txt
+
+elixir:
+	elixir ./main.ex -o ./bin

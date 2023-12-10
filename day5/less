@@ -1,0 +1,2228 @@
+In file included from main.c:5:
+cc.h: In function ‘cc_map_insert_raw’:
+cc.h:1998:9: warning: write to ‘const’ object ‘cc_map_placeholder’ [-Wanalyzer-write-to-const]
+ 1998 |         memmove(
+      |         ^~~~~~~~
+ 1999 |           cc_map_el( cntr, 1, el_size, layout ),
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2000 |           cc_map_el( cntr, 0, el_size, layout ),
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2001 |           j * CC_BUCKET_SIZE( el_size, layout )
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2002 |         );
+      |         ~
+  ‘part1’: event 1
+    |
+    |main.c:44:6:
+    |   44 | void part1(FILE *fp) {
+    |      |      ^~~~~
+    |      |      |
+    |      |      (1) entry to ‘part1’
+    |
+  ‘part1’: events 2-5
+    |
+    |   51 |         while (fgets(line, MAX_LINE, fp) != NULL) {
+    |      |                                          ^
+    |      |                                          |
+    |      |                                          (2) following ‘true’ branch...
+    |   52 |                 int dst_r, src_r, size_r;
+    |   53 |                 if (!strncmp(line, "seeds:", 6)) {
+    |      |                    ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                    | |
+    |      |                    | (3) ...to here
+    |      |                    (4) following ‘true’ branch...
+    |   54 |                         line += 7;
+    |      |                              ~~           
+    |      |                              |
+    |      |                              (5) ...to here
+    |
+  ‘part1’: events 6-9
+    |
+    |   55 |                         while ((tok = strsep(&line, " ")) != NULL) {
+    |      |                                                           ^
+    |      |                                                           |
+    |      |                                                           (6) following ‘true’ branch (when ‘tok’ is non-NULL)...
+    |   56 |                                 if (tok[0] == '\n') break;
+    |      |                                    ~~~~~~~                 
+    |      |                                    |   |
+    |      |                                    |   (7) ...to here
+    |      |                                    (8) following ‘false’ branch...
+    |......
+    |   60 |                                 seed = atoi(tok);
+    |      |                                        ~~~~~~~~~           
+    |      |                                        |
+    |      |                                        (9) ...to here
+    |
+  ‘part1’: event 10
+    |
+    |cc.h:2951:57:
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |                                                         ^
+    |      |                                                         |
+    |      |                                                         (10) inlined call to ‘cc_cmpr_int_select’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_cmpr_int_select’: event 11
+           |
+           |cc.h:3939:74:
+           | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+           |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+           |      |                                                                          |
+           |      |                                                                          (11) following ‘true’ branch (when ‘cntr_id == 3’)...
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+           | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+           |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |
+         ‘cc_cmpr_int_select’: event 12
+           |
+           | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+           |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+           |      |                                                                          |
+           |      |                                                                          (12) ...to here
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+           | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+           |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |
+    <------+
+    |
+  ‘part1’: event 13
+    |
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |                                                         ^
+    |      |                                                         |
+    |      |                                                         (13) inlined call to ‘cc_layout’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_layout’: events 14-15
+           |
+           |cc.h:965:5:
+           |  965 |   if( cntr_id == CC_MAP )
+           |      |     ^
+           |      |     |
+           |      |     (14) following ‘true’ branch (when ‘cntr_id == 3’)...
+           |  966 |     return
+           |  967 |       key_details.size                                                                        |
+           |      |       ~~~~~~~~~~~~~~~~
+           |      |                  |
+           |      |                  (15) ...to here
+           |
+    <------+
+    |
+  ‘part1’: event 16
+    |
+    | 2950 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                                                         |
+    |      |                                                         (16) calling ‘cc_map_insert’ from ‘part1’
+    | 2952 |       CC_CNTR_ID( *(cntr) ) == CC_LIST ? cc_list_insert :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2953 |                             /* CC_MAP */ cc_map_insert                                       \
+    |      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2954 |     )                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2955 |     /* Function args */                                                                      \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2956 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2957 |       *(cntr),                                                                               \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2958 |       &CC_MAKE_LVAL_COPY( CC_EL_TY( *(cntr) ), (el) ),                                       \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2959 |       &CC_MAKE_LVAL_COPY( CC_KEY_TY( *(cntr) ), (key) ),                                     \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2960 |       true,                                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2961 |       CC_EL_SIZE( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2962 |       CC_LAYOUT( *(cntr) ),                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2963 |       CC_KEY_HASH( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2964 |       CC_KEY_CMPR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2965 |       CC_KEY_LOAD( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2966 |       CC_EL_DTOR( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2967 |       CC_KEY_DTOR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2968 |       CC_REALLOC_FN,                                                                         \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2969 |       CC_FREE_FN                                                                             \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2970 |     )                                                                                        \
+    |      |     ~                                                    
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_map_insert’: events 17-18
+           |
+           |cc.h:2223:40:
+           | 2223 | static inline cc_allocing_fn_result_ty cc_map_insert(
+           |      |                                        ^~~~~~~~~~~~~
+           |      |                                        |
+           |      |                                        (17) entry to ‘cc_map_insert’
+           |......
+           | 2258 |   void *new_el = cc_map_insert_raw(
+           |      |                  ~~~~~~~~~~~~~~~~~~     
+           |      |                  |
+           |      |                  (18) calling ‘cc_map_insert_raw’ from ‘cc_map_insert’
+           | 2259 |     cntr,
+           |      |     ~~~~~                               
+           | 2260 |     el,
+           |      |     ~~~                                 
+           | 2261 |     key,
+           |      |     ~~~~                                
+           | 2262 |     hash( key ),
+           |      |     ~~~~~~~~~~~~                        
+           | 2263 |     replace,
+           |      |     ~~~~~~~~                            
+           | 2264 |     el_size,
+           |      |     ~~~~~~~~                            
+           | 2265 |     layout,
+           |      |     ~~~~~~~                             
+           | 2266 |     //hash,
+           |      |     ~~~~~~~                             
+           | 2267 |     cmpr,
+           |      |     ~~~~~                               
+           | 2268 |     el_dtor,
+           |      |     ~~~~~~~~                            
+           | 2269 |     key_dtor
+           |      |     ~~~~~~~~                            
+           | 2270 |   );
+           |      |   ~                                     
+           |
+           +--> ‘cc_map_insert_raw’: events 19-22
+                  |
+                  | 1960 | static inline void *cc_map_insert_raw(
+                  |      |                     ^~~~~~~~~~~~~~~~~
+                  |      |                     |
+                  |      |                     (19) entry to ‘cc_map_insert_raw’
+                  |......
+                  | 1987 |         if( !*cc_map_probelen( cntr, j, el_size, layout ) )
+                  |      |           ~          
+                  |      |           |
+                  |      |           (20) following ‘false’ branch...
+                  |......
+                  | 1990 |         ++*cc_map_probelen( cntr, j, el_size, layout );
+                  |      |            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |      |            |
+                  |      |            (21) ...to here
+                  |......
+                  | 1996 |       if( j < i )
+                  |      |         ~            
+                  |      |         |
+                  |      |         (22) following ‘true’ branch (when ‘j < i’)...
+                  |
+                ‘cc_map_insert_raw’: event 23
+                  |
+                  |  986 | #define CC_KEY_OFFSET( el_size, layout ) ( (el_size) + (uint8_t)( layout >> 32 ) )
+                  |      |                                                                 ~~~~~~~~~^~~~~~~
+                  |      |                                                                          |
+                  |      |                                                                          (23) ...to here
+cc.h:989:3: note: in expansion of macro ‘CC_KEY_OFFSET’
+                  |  989 | ( CC_KEY_OFFSET( el_size, layout ) + (uint32_t)( layout ) + (uint8_t)( layout >> 40 ) ) \
+                  |      |   ^~~~~~~~~~~~~
+cc.h:992:3: note: in expansion of macro ‘CC_PROBELEN_OFFSET’
+                  |  992 | ( CC_PROBELEN_OFFSET( el_size, layout ) + sizeof( cc_probelen_ty ) + (uint8_t)( layout >> 48 ) ) \
+                  |      |   ^~~~~~~~~~~~~~~~~~
+cc.h:2001:15: note: in expansion of macro ‘CC_BUCKET_SIZE’
+                  | 2001 |           j * CC_BUCKET_SIZE( el_size, layout )
+                  |      |               ^~~~~~~~~~~~~~
+                  |
+                ‘cc_map_insert_raw’: event 24
+                  |
+                  | 1998 |         memmove(
+                  |      |         ^~~~~~~~
+                  |      |         |
+                  |      |         (24) write to ‘const’ object ‘cc_map_placeholder’ here
+                  | 1999 |           cc_map_el( cntr, 1, el_size, layout ),
+                  |      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  | 2000 |           cc_map_el( cntr, 0, el_size, layout ),
+                  |      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  | 2001 |           j * CC_BUCKET_SIZE( el_size, layout )
+                  |      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  | 2002 |         );
+                  |      |         ~
+                  |
+cc.h:1896:28: note: declared here
+ 1896 | static const cc_map_hdr_ty cc_map_placeholder = { 0, 0 };
+      |                            ^~~~~~~~~~~~~~~~~~
+cc.h:2004:9: warning: buffer overflow [CWE-787] [-Wanalyzer-out-of-bounds]
+ 2004 |         memcpy(
+      |         ^~~~~~~
+ 2005 |           cc_map_el( cntr, 0, el_size, layout ),
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2006 |           cc_map_el( cntr, cc_map_hdr( cntr )->cap - 1, el_size, layout ),
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2007 |           CC_BUCKET_SIZE( el_size, layout )
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2008 |         );
+      |         ~
+  event 1
+    |
+    | 1896 | static const cc_map_hdr_ty cc_map_placeholder = { 0, 0 };
+    |      |                            ^~~~~~~~~~~~~~~~~~
+    |      |                            |
+    |      |                            (1) capacity: 16 bytes
+    |
+    +--> ‘part1’: event 2
+           |
+           |main.c:44:6:
+           |   44 | void part1(FILE *fp) {
+           |      |      ^~~~~
+           |      |      |
+           |      |      (2) entry to ‘part1’
+           |
+         ‘part1’: events 3-6
+           |
+           |   51 |         while (fgets(line, MAX_LINE, fp) != NULL) {
+           |      |                                          ^
+           |      |                                          |
+           |      |                                          (3) following ‘true’ branch...
+           |   52 |                 int dst_r, src_r, size_r;
+           |   53 |                 if (!strncmp(line, "seeds:", 6)) {
+           |      |                    ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |      |                    | |
+           |      |                    | (4) ...to here
+           |      |                    (5) following ‘true’ branch...
+           |   54 |                         line += 7;
+           |      |                              ~~           
+           |      |                              |
+           |      |                              (6) ...to here
+           |
+         ‘part1’: events 7-10
+           |
+           |   55 |                         while ((tok = strsep(&line, " ")) != NULL) {
+           |      |                                                           ^
+           |      |                                                           |
+           |      |                                                           (7) following ‘true’ branch (when ‘tok’ is non-NULL)...
+           |   56 |                                 if (tok[0] == '\n') break;
+           |      |                                    ~~~~~~~                 
+           |      |                                    |   |
+           |      |                                    |   (8) ...to here
+           |      |                                    (9) following ‘false’ branch...
+           |......
+           |   60 |                                 seed = atoi(tok);
+           |      |                                        ~~~~~~~~~           
+           |      |                                        |
+           |      |                                        (10) ...to here
+           |
+         ‘part1’: event 11
+           |
+           |cc.h:2951:57:
+           | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+           |      |                                                         ^
+           |      |                                                         |
+           |      |                                                         (11) inlined call to ‘cc_cmpr_int_select’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+           |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+           |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+           | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+           |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+           |  715 | #define CC_CAT_2_( a, b ) a##b
+           |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+           |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+           |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+           |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+           |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+           | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+           |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+           |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+           |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+           |   62 |                                 insert(&seed_map, seed, m);
+           |      |                                 ^~~~~~
+           |
+           +--> ‘cc_cmpr_int_select’: event 12
+                  |
+                  |cc.h:3939:74:
+                  | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+                  |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+                  |      |                                                                          |
+                  |      |                                                                          (12) following ‘true’ branch (when ‘cntr_id == 3’)...
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+                  | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+                  |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |
+                ‘cc_cmpr_int_select’: event 13
+                  |
+                  | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+                  |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+                  |      |                                                                          |
+                  |      |                                                                          (13) ...to here
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+                  | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+                  |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |
+           <------+
+           |
+         ‘part1’: event 14
+           |
+           | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+           |      |                                                         ^
+           |      |                                                         |
+           |      |                                                         (14) inlined call to ‘cc_layout’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+           |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+           |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+           | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+           |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+           |  715 | #define CC_CAT_2_( a, b ) a##b
+           |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+           |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+           |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+           |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+           |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+           | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+           |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+           |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+           |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+           |   62 |                                 insert(&seed_map, seed, m);
+           |      |                                 ^~~~~~
+           |
+           +--> ‘cc_layout’: events 15-16
+                  |
+                  |cc.h:965:5:
+                  |  965 |   if( cntr_id == CC_MAP )
+                  |      |     ^
+                  |      |     |
+                  |      |     (15) following ‘true’ branch (when ‘cntr_id == 3’)...
+                  |  966 |     return
+                  |  967 |       key_details.size                                                                        |
+                  |      |       ~~~~~~~~~~~~~~~~
+                  |      |                  |
+                  |      |                  (16) ...to here
+                  |
+           <------+
+           |
+         ‘part1’: event 17
+           |
+           | 2950 |     (                                                                                        \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |      |                                                         |
+           |      |                                                         (17) calling ‘cc_map_insert’ from ‘part1’
+           | 2952 |       CC_CNTR_ID( *(cntr) ) == CC_LIST ? cc_list_insert :                                    \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2953 |                             /* CC_MAP */ cc_map_insert                                       \
+           |      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2954 |     )                                                                                        \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2955 |     /* Function args */                                                                      \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2956 |     (                                                                                        \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2957 |       *(cntr),                                                                               \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2958 |       &CC_MAKE_LVAL_COPY( CC_EL_TY( *(cntr) ), (el) ),                                       \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2959 |       &CC_MAKE_LVAL_COPY( CC_KEY_TY( *(cntr) ), (key) ),                                     \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2960 |       true,                                                                                  \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2961 |       CC_EL_SIZE( *(cntr) ),                                                                 \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2962 |       CC_LAYOUT( *(cntr) ),                                                                  \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2963 |       CC_KEY_HASH( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2964 |       CC_KEY_CMPR( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2965 |       CC_KEY_LOAD( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2966 |       CC_EL_DTOR( *(cntr) ),                                                                 \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2967 |       CC_KEY_DTOR( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2968 |       CC_REALLOC_FN,                                                                         \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2969 |       CC_FREE_FN                                                                             \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2970 |     )                                                                                        \
+           |      |     ~                                                    
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+           |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+           |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+           | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+           |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+           |  715 | #define CC_CAT_2_( a, b ) a##b
+           |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+           |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+           |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+           |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+           |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+           | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+           |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+           |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+           |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+           |   62 |                                 insert(&seed_map, seed, m);
+           |      |                                 ^~~~~~
+           |
+           +--> ‘cc_map_insert’: events 18-19
+                  |
+                  |cc.h:2223:40:
+                  | 2223 | static inline cc_allocing_fn_result_ty cc_map_insert(
+                  |      |                                        ^~~~~~~~~~~~~
+                  |      |                                        |
+                  |      |                                        (18) entry to ‘cc_map_insert’
+                  |......
+                  | 2258 |   void *new_el = cc_map_insert_raw(
+                  |      |                  ~~~~~~~~~~~~~~~~~~     
+                  |      |                  |
+                  |      |                  (19) calling ‘cc_map_insert_raw’ from ‘cc_map_insert’
+                  | 2259 |     cntr,
+                  |      |     ~~~~~                               
+                  | 2260 |     el,
+                  |      |     ~~~                                 
+                  | 2261 |     key,
+                  |      |     ~~~~                                
+                  | 2262 |     hash( key ),
+                  |      |     ~~~~~~~~~~~~                        
+                  | 2263 |     replace,
+                  |      |     ~~~~~~~~                            
+                  | 2264 |     el_size,
+                  |      |     ~~~~~~~~                            
+                  | 2265 |     layout,
+                  |      |     ~~~~~~~                             
+                  | 2266 |     //hash,
+                  |      |     ~~~~~~~                             
+                  | 2267 |     cmpr,
+                  |      |     ~~~~~                               
+                  | 2268 |     el_dtor,
+                  |      |     ~~~~~~~~                            
+                  | 2269 |     key_dtor
+                  |      |     ~~~~~~~~                            
+                  | 2270 |   );
+                  |      |   ~                                     
+                  |
+                  +--> ‘cc_map_insert_raw’: events 20-23
+                         |
+                         | 1960 | static inline void *cc_map_insert_raw(
+                         |      |                     ^~~~~~~~~~~~~~~~~
+                         |      |                     |
+                         |      |                     (20) entry to ‘cc_map_insert_raw’
+                         |......
+                         | 1987 |         if( !*cc_map_probelen( cntr, j, el_size, layout ) )
+                         |      |           ~          
+                         |      |           |
+                         |      |           (21) following ‘false’ branch...
+                         |......
+                         | 1990 |         ++*cc_map_probelen( cntr, j, el_size, layout );
+                         |      |            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                         |      |            |
+                         |      |            (22) ...to here
+                         |......
+                         | 1996 |       if( j < i )
+                         |      |         ~            
+                         |      |         |
+                         |      |         (23) following ‘true’ branch (when ‘j < i’)...
+                         |
+                       ‘cc_map_insert_raw’: event 24
+                         |
+                         |  986 | #define CC_KEY_OFFSET( el_size, layout ) ( (el_size) + (uint8_t)( layout >> 32 ) )
+                         |      |                                                                 ~~~~~~~~~^~~~~~~
+                         |      |                                                                          |
+                         |      |                                                                          (24) ...to here
+cc.h:989:3: note: in expansion of macro ‘CC_KEY_OFFSET’
+                         |  989 | ( CC_KEY_OFFSET( el_size, layout ) + (uint32_t)( layout ) + (uint8_t)( layout >> 40 ) ) \
+                         |      |   ^~~~~~~~~~~~~
+cc.h:992:3: note: in expansion of macro ‘CC_PROBELEN_OFFSET’
+                         |  992 | ( CC_PROBELEN_OFFSET( el_size, layout ) + sizeof( cc_probelen_ty ) + (uint8_t)( layout >> 48 ) ) \
+                         |      |   ^~~~~~~~~~~~~~~~~~
+cc.h:2001:15: note: in expansion of macro ‘CC_BUCKET_SIZE’
+                         | 2001 |           j * CC_BUCKET_SIZE( el_size, layout )
+                         |      |               ^~~~~~~~~~~~~~
+                         |
+                       ‘cc_map_insert_raw’: event 25
+                         |
+                         | 2004 |         memcpy(
+                         |      |         ^~~~~~~
+                         |      |         |
+                         |      |         (25) out-of-bounds write from byte 16 till byte 31 but ‘cc_map_placeholder’ ends at byte 16
+                         | 2005 |           cc_map_el( cntr, 0, el_size, layout ),
+                         |      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                         | 2006 |           cc_map_el( cntr, cc_map_hdr( cntr )->cap - 1, el_size, layout ),
+                         |      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                         | 2007 |           CC_BUCKET_SIZE( el_size, layout )
+                         |      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                         | 2008 |         );
+                         |      |         ~
+                         |
+cc.h:2004:9: note: write of 16 bytes to beyond the end of ‘cc_map_placeholder’
+cc.h:2004:9: warning: write to ‘const’ object ‘cc_map_placeholder’ [-Wanalyzer-write-to-const]
+  ‘part1’: event 1
+    |
+    |main.c:44:6:
+    |   44 | void part1(FILE *fp) {
+    |      |      ^~~~~
+    |      |      |
+    |      |      (1) entry to ‘part1’
+    |
+  ‘part1’: events 2-5
+    |
+    |   51 |         while (fgets(line, MAX_LINE, fp) != NULL) {
+    |      |                                          ^
+    |      |                                          |
+    |      |                                          (2) following ‘true’ branch...
+    |   52 |                 int dst_r, src_r, size_r;
+    |   53 |                 if (!strncmp(line, "seeds:", 6)) {
+    |      |                    ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                    | |
+    |      |                    | (3) ...to here
+    |      |                    (4) following ‘true’ branch...
+    |   54 |                         line += 7;
+    |      |                              ~~           
+    |      |                              |
+    |      |                              (5) ...to here
+    |
+  ‘part1’: events 6-9
+    |
+    |   55 |                         while ((tok = strsep(&line, " ")) != NULL) {
+    |      |                                                           ^
+    |      |                                                           |
+    |      |                                                           (6) following ‘true’ branch (when ‘tok’ is non-NULL)...
+    |   56 |                                 if (tok[0] == '\n') break;
+    |      |                                    ~~~~~~~                 
+    |      |                                    |   |
+    |      |                                    |   (7) ...to here
+    |      |                                    (8) following ‘false’ branch...
+    |......
+    |   60 |                                 seed = atoi(tok);
+    |      |                                        ~~~~~~~~~           
+    |      |                                        |
+    |      |                                        (9) ...to here
+    |
+  ‘part1’: event 10
+    |
+    |cc.h:2951:57:
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |                                                         ^
+    |      |                                                         |
+    |      |                                                         (10) inlined call to ‘cc_cmpr_int_select’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_cmpr_int_select’: event 11
+           |
+           |cc.h:3939:74:
+           | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+           |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+           |      |                                                                          |
+           |      |                                                                          (11) following ‘true’ branch (when ‘cntr_id == 3’)...
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+           | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+           |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |
+         ‘cc_cmpr_int_select’: event 12
+           |
+           | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+           |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+           |      |                                                                          |
+           |      |                                                                          (12) ...to here
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+           | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+           |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |
+    <------+
+    |
+  ‘part1’: event 13
+    |
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |                                                         ^
+    |      |                                                         |
+    |      |                                                         (13) inlined call to ‘cc_layout’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_layout’: events 14-15
+           |
+           |cc.h:965:5:
+           |  965 |   if( cntr_id == CC_MAP )
+           |      |     ^
+           |      |     |
+           |      |     (14) following ‘true’ branch (when ‘cntr_id == 3’)...
+           |  966 |     return
+           |  967 |       key_details.size                                                                        |
+           |      |       ~~~~~~~~~~~~~~~~
+           |      |                  |
+           |      |                  (15) ...to here
+           |
+    <------+
+    |
+  ‘part1’: event 16
+    |
+    | 2950 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                                                         |
+    |      |                                                         (16) calling ‘cc_map_insert’ from ‘part1’
+    | 2952 |       CC_CNTR_ID( *(cntr) ) == CC_LIST ? cc_list_insert :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2953 |                             /* CC_MAP */ cc_map_insert                                       \
+    |      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2954 |     )                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2955 |     /* Function args */                                                                      \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2956 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2957 |       *(cntr),                                                                               \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2958 |       &CC_MAKE_LVAL_COPY( CC_EL_TY( *(cntr) ), (el) ),                                       \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2959 |       &CC_MAKE_LVAL_COPY( CC_KEY_TY( *(cntr) ), (key) ),                                     \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2960 |       true,                                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2961 |       CC_EL_SIZE( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2962 |       CC_LAYOUT( *(cntr) ),                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2963 |       CC_KEY_HASH( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2964 |       CC_KEY_CMPR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2965 |       CC_KEY_LOAD( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2966 |       CC_EL_DTOR( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2967 |       CC_KEY_DTOR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2968 |       CC_REALLOC_FN,                                                                         \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2969 |       CC_FREE_FN                                                                             \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2970 |     )                                                                                        \
+    |      |     ~                                                    
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_map_insert’: events 17-18
+           |
+           |cc.h:2223:40:
+           | 2223 | static inline cc_allocing_fn_result_ty cc_map_insert(
+           |      |                                        ^~~~~~~~~~~~~
+           |      |                                        |
+           |      |                                        (17) entry to ‘cc_map_insert’
+           |......
+           | 2258 |   void *new_el = cc_map_insert_raw(
+           |      |                  ~~~~~~~~~~~~~~~~~~     
+           |      |                  |
+           |      |                  (18) calling ‘cc_map_insert_raw’ from ‘cc_map_insert’
+           | 2259 |     cntr,
+           |      |     ~~~~~                               
+           | 2260 |     el,
+           |      |     ~~~                                 
+           | 2261 |     key,
+           |      |     ~~~~                                
+           | 2262 |     hash( key ),
+           |      |     ~~~~~~~~~~~~                        
+           | 2263 |     replace,
+           |      |     ~~~~~~~~                            
+           | 2264 |     el_size,
+           |      |     ~~~~~~~~                            
+           | 2265 |     layout,
+           |      |     ~~~~~~~                             
+           | 2266 |     //hash,
+           |      |     ~~~~~~~                             
+           | 2267 |     cmpr,
+           |      |     ~~~~~                               
+           | 2268 |     el_dtor,
+           |      |     ~~~~~~~~                            
+           | 2269 |     key_dtor
+           |      |     ~~~~~~~~                            
+           | 2270 |   );
+           |      |   ~                                     
+           |
+           +--> ‘cc_map_insert_raw’: events 19-22
+                  |
+                  | 1960 | static inline void *cc_map_insert_raw(
+                  |      |                     ^~~~~~~~~~~~~~~~~
+                  |      |                     |
+                  |      |                     (19) entry to ‘cc_map_insert_raw’
+                  |......
+                  | 1987 |         if( !*cc_map_probelen( cntr, j, el_size, layout ) )
+                  |      |           ~          
+                  |      |           |
+                  |      |           (20) following ‘false’ branch...
+                  |......
+                  | 1990 |         ++*cc_map_probelen( cntr, j, el_size, layout );
+                  |      |            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |      |            |
+                  |      |            (21) ...to here
+                  |......
+                  | 1996 |       if( j < i )
+                  |      |         ~            
+                  |      |         |
+                  |      |         (22) following ‘true’ branch (when ‘j < i’)...
+                  |
+                ‘cc_map_insert_raw’: event 23
+                  |
+                  |  986 | #define CC_KEY_OFFSET( el_size, layout ) ( (el_size) + (uint8_t)( layout >> 32 ) )
+                  |      |                                                                 ~~~~~~~~~^~~~~~~
+                  |      |                                                                          |
+                  |      |                                                                          (23) ...to here
+cc.h:989:3: note: in expansion of macro ‘CC_KEY_OFFSET’
+                  |  989 | ( CC_KEY_OFFSET( el_size, layout ) + (uint32_t)( layout ) + (uint8_t)( layout >> 40 ) ) \
+                  |      |   ^~~~~~~~~~~~~
+cc.h:992:3: note: in expansion of macro ‘CC_PROBELEN_OFFSET’
+                  |  992 | ( CC_PROBELEN_OFFSET( el_size, layout ) + sizeof( cc_probelen_ty ) + (uint8_t)( layout >> 48 ) ) \
+                  |      |   ^~~~~~~~~~~~~~~~~~
+cc.h:2001:15: note: in expansion of macro ‘CC_BUCKET_SIZE’
+                  | 2001 |           j * CC_BUCKET_SIZE( el_size, layout )
+                  |      |               ^~~~~~~~~~~~~~
+                  |
+                ‘cc_map_insert_raw’: event 24
+                  |
+                  | 2004 |         memcpy(
+                  |      |         ^~~~~~~
+                  |      |         |
+                  |      |         (24) write to ‘const’ object ‘cc_map_placeholder’ here
+                  | 2005 |           cc_map_el( cntr, 0, el_size, layout ),
+                  |      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  | 2006 |           cc_map_el( cntr, cc_map_hdr( cntr )->cap - 1, el_size, layout ),
+                  |      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  | 2007 |           CC_BUCKET_SIZE( el_size, layout )
+                  |      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  | 2008 |         );
+                  |      |         ~
+                  |
+cc.h:1896:28: note: declared here
+ 1896 | static const cc_map_hdr_ty cc_map_placeholder = { 0, 0 };
+      |                            ^~~~~~~~~~~~~~~~~~
+cc.h:2025:7: warning: write to ‘const’ object ‘cc_map_placeholder’ [-Wanalyzer-write-to-const]
+ 2025 |       ++cc_map_hdr( cntr )->size;
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  ‘part1’: event 1
+    |
+    |main.c:44:6:
+    |   44 | void part1(FILE *fp) {
+    |      |      ^~~~~
+    |      |      |
+    |      |      (1) entry to ‘part1’
+    |
+  ‘part1’: events 2-5
+    |
+    |   51 |         while (fgets(line, MAX_LINE, fp) != NULL) {
+    |      |                                          ^
+    |      |                                          |
+    |      |                                          (2) following ‘true’ branch...
+    |   52 |                 int dst_r, src_r, size_r;
+    |   53 |                 if (!strncmp(line, "seeds:", 6)) {
+    |      |                    ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                    | |
+    |      |                    | (3) ...to here
+    |      |                    (4) following ‘true’ branch...
+    |   54 |                         line += 7;
+    |      |                              ~~           
+    |      |                              |
+    |      |                              (5) ...to here
+    |
+  ‘part1’: events 6-9
+    |
+    |   55 |                         while ((tok = strsep(&line, " ")) != NULL) {
+    |      |                                                           ^
+    |      |                                                           |
+    |      |                                                           (6) following ‘true’ branch (when ‘tok’ is non-NULL)...
+    |   56 |                                 if (tok[0] == '\n') break;
+    |      |                                    ~~~~~~~                 
+    |      |                                    |   |
+    |      |                                    |   (7) ...to here
+    |      |                                    (8) following ‘false’ branch...
+    |......
+    |   60 |                                 seed = atoi(tok);
+    |      |                                        ~~~~~~~~~           
+    |      |                                        |
+    |      |                                        (9) ...to here
+    |
+  ‘part1’: event 10
+    |
+    |cc.h:2951:57:
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |                                                         ^
+    |      |                                                         |
+    |      |                                                         (10) inlined call to ‘cc_cmpr_int_select’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_cmpr_int_select’: event 11
+           |
+           |cc.h:3939:74:
+           | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+           |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+           |      |                                                                          |
+           |      |                                                                          (11) following ‘true’ branch (when ‘cntr_id == 3’)...
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+           | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+           |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |
+         ‘cc_cmpr_int_select’: event 12
+           |
+           | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+           |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+           |      |                                                                          |
+           |      |                                                                          (12) ...to here
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+           | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+           |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |
+    <------+
+    |
+  ‘part1’: event 13
+    |
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |                                                         ^
+    |      |                                                         |
+    |      |                                                         (13) inlined call to ‘cc_layout’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_layout’: events 14-15
+           |
+           |cc.h:965:5:
+           |  965 |   if( cntr_id == CC_MAP )
+           |      |     ^
+           |      |     |
+           |      |     (14) following ‘true’ branch (when ‘cntr_id == 3’)...
+           |  966 |     return
+           |  967 |       key_details.size                                                                        |
+           |      |       ~~~~~~~~~~~~~~~~
+           |      |                  |
+           |      |                  (15) ...to here
+           |
+    <------+
+    |
+  ‘part1’: event 16
+    |
+    | 2950 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                                                         |
+    |      |                                                         (16) calling ‘cc_map_insert’ from ‘part1’
+    | 2952 |       CC_CNTR_ID( *(cntr) ) == CC_LIST ? cc_list_insert :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2953 |                             /* CC_MAP */ cc_map_insert                                       \
+    |      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2954 |     )                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2955 |     /* Function args */                                                                      \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2956 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2957 |       *(cntr),                                                                               \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2958 |       &CC_MAKE_LVAL_COPY( CC_EL_TY( *(cntr) ), (el) ),                                       \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2959 |       &CC_MAKE_LVAL_COPY( CC_KEY_TY( *(cntr) ), (key) ),                                     \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2960 |       true,                                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2961 |       CC_EL_SIZE( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2962 |       CC_LAYOUT( *(cntr) ),                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2963 |       CC_KEY_HASH( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2964 |       CC_KEY_CMPR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2965 |       CC_KEY_LOAD( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2966 |       CC_EL_DTOR( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2967 |       CC_KEY_DTOR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2968 |       CC_REALLOC_FN,                                                                         \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2969 |       CC_FREE_FN                                                                             \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2970 |     )                                                                                        \
+    |      |     ~                                                    
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_map_insert’: events 17-18
+           |
+           |cc.h:2223:40:
+           | 2223 | static inline cc_allocing_fn_result_ty cc_map_insert(
+           |      |                                        ^~~~~~~~~~~~~
+           |      |                                        |
+           |      |                                        (17) entry to ‘cc_map_insert’
+           |......
+           | 2258 |   void *new_el = cc_map_insert_raw(
+           |      |                  ~~~~~~~~~~~~~~~~~~     
+           |      |                  |
+           |      |                  (18) calling ‘cc_map_insert_raw’ from ‘cc_map_insert’
+           | 2259 |     cntr,
+           |      |     ~~~~~                               
+           | 2260 |     el,
+           |      |     ~~~                                 
+           | 2261 |     key,
+           |      |     ~~~~                                
+           | 2262 |     hash( key ),
+           |      |     ~~~~~~~~~~~~                        
+           | 2263 |     replace,
+           |      |     ~~~~~~~~                            
+           | 2264 |     el_size,
+           |      |     ~~~~~~~~                            
+           | 2265 |     layout,
+           |      |     ~~~~~~~                             
+           | 2266 |     //hash,
+           |      |     ~~~~~~~                             
+           | 2267 |     cmpr,
+           |      |     ~~~~~                               
+           | 2268 |     el_dtor,
+           |      |     ~~~~~~~~                            
+           | 2269 |     key_dtor
+           |      |     ~~~~~~~~                            
+           | 2270 |   );
+           |      |   ~                                     
+           |
+           +--> ‘cc_map_insert_raw’: events 19-22
+                  |
+                  | 1960 | static inline void *cc_map_insert_raw(
+                  |      |                     ^~~~~~~~~~~~~~~~~
+                  |      |                     |
+                  |      |                     (19) entry to ‘cc_map_insert_raw’
+                  |......
+                  | 1996 |       if( j < i )
+                  |      |         ~            
+                  |      |         |
+                  |      |         (20) following ‘false’ branch (when ‘j >= i’)...
+                  |......
+                  | 2013 |       if( i != j )
+                  |      |         ~            
+                  |      |         |
+                  |      |         (21) ...to here
+                  |......
+                  | 2025 |       ++cc_map_hdr( cntr )->size;
+                  |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |      |       |
+                  |      |       (22) write to ‘const’ object ‘cc_map_placeholder’ here
+                  |
+cc.h:1896:28: note: declared here
+ 1896 | static const cc_map_hdr_ty cc_map_placeholder = { 0, 0 };
+      |                            ^~~~~~~~~~~~~~~~~~
+main.c: In function ‘part1’:
+cc.h:2832:4: warning: allocated buffer size is not a multiple of the pointee's size [CWE-131] [-Wanalyzer-allocation-size]
+ 2832 |   ),                                                                                   \
+      |    ^
+cc.h:572:30: note: in expansion of macro ‘cc_init’
+  572 | #define init( ... )          cc_init( __VA_ARGS__ )
+      |                              ^~~~~~~
+main.c:50:9: note: in expansion of macro ‘init’
+   50 |         init(&seed_map);
+      |         ^~~~
+  event 1
+    |
+    |cc.h:1896:28:
+    | 1896 | static const cc_map_hdr_ty cc_map_placeholder = { 0, 0 };
+    |      |                            ^~~~~~~~~~~~~~~~~~
+    |      |                            |
+    |      |                            (1) allocated here
+    |
+    +--> ‘part1’: event 2
+           |
+           | 2832 |   ),                                                                                   \
+           |      |    ^
+           |      |    |
+           |      |    (2) assigned to ‘seed_map_t (* (*)[3])(int *)’ here; ‘sizeof (seed_map_t (*[3])(int *))’ is ‘24’
+cc.h:572:30: note: in expansion of macro ‘cc_init’
+           |  572 | #define init( ... )          cc_init( __VA_ARGS__ )
+           |      |                              ^~~~~~~
+main.c:50:9: note: in expansion of macro ‘init’
+           |   50 |         init(&seed_map);
+           |      |         ^~~~
+           |
+cc.h:2946:4: warning: allocated buffer size is not a multiple of the pointee's size [CWE-131] [-Wanalyzer-allocation-size]
+ 2946 |   ),                                                                                         \
+      |    ^
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+  715 | #define CC_CAT_2_( a, b ) a##b
+      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+ 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+   62 |                                 insert(&seed_map, seed, m);
+      |                                 ^~~~~~
+  ‘part1’: event 1
+    |
+    |   44 | void part1(FILE *fp) {
+    |      |      ^~~~~
+    |      |      |
+    |      |      (1) entry to ‘part1’
+    |
+  ‘part1’: event 2
+    |
+    |cc.h:633:49:
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                 ^
+    |      |                                                 |
+    |      |                                                 (2) allocated 16 bytes here
+cc.h:1032:33: note: in expansion of macro ‘CC_MAKE_LVAL_COPY’
+    | 1032 |   cntr = (CC_TYPEOF_XP( cntr ))&CC_MAKE_LVAL_COPY( cc_allocing_fn_result_ty, fn_call ) \
+    |      |                                 ^~~~~~~~~~~~~~~~~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+  ‘part1’: events 3-6
+    |
+    |   51 |         while (fgets(line, MAX_LINE, fp) != NULL) {
+    |      |                                          ^
+    |      |                                          |
+    |      |                                          (3) following ‘true’ branch...
+    |   52 |                 int dst_r, src_r, size_r;
+    |   53 |                 if (!strncmp(line, "seeds:", 6)) {
+    |      |                    ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                    | |
+    |      |                    | (4) ...to here
+    |      |                    (5) following ‘true’ branch...
+    |   54 |                         line += 7;
+    |      |                              ~~           
+    |      |                              |
+    |      |                              (6) ...to here
+    |
+  ‘part1’: events 7-10
+    |
+    |   55 |                         while ((tok = strsep(&line, " ")) != NULL) {
+    |      |                                                           ^
+    |      |                                                           |
+    |      |                                                           (7) following ‘true’ branch (when ‘tok’ is non-NULL)...
+    |   56 |                                 if (tok[0] == '\n') break;
+    |      |                                    ~~~~~~~                 
+    |      |                                    |   |
+    |      |                                    |   (8) ...to here
+    |      |                                    (9) following ‘false’ branch...
+    |......
+    |   60 |                                 seed = atoi(tok);
+    |      |                                        ~~~~~~~~~           
+    |      |                                        |
+    |      |                                        (10) ...to here
+    |
+  ‘part1’: event 11
+    |
+    |cc.h:2951:57:
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |                                                         ^
+    |      |                                                         |
+    |      |                                                         (11) inlined call to ‘cc_cmpr_int_select’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_cmpr_int_select’: event 12
+           |
+           |cc.h:3939:74:
+           | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+           |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+           |      |                                                                          |
+           |      |                                                                          (12) following ‘true’ branch (when ‘cntr_id == 3’)...
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+           | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+           |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |
+         ‘cc_cmpr_int_select’: event 13
+           |
+           | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+           |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+           |      |                                                                          |
+           |      |                                                                          (13) ...to here
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+           | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+           |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |
+    <------+
+    |
+  ‘part1’: event 14
+    |
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |                                                         ^
+    |      |                                                         |
+    |      |                                                         (14) inlined call to ‘cc_layout’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_layout’: events 15-16
+           |
+           |cc.h:965:5:
+           |  965 |   if( cntr_id == CC_MAP )
+           |      |     ^
+           |      |     |
+           |      |     (15) following ‘true’ branch (when ‘cntr_id == 3’)...
+           |  966 |     return
+           |  967 |       key_details.size                                                                        |
+           |      |       ~~~~~~~~~~~~~~~~
+           |      |                  |
+           |      |                  (16) ...to here
+           |
+    <------+
+    |
+  ‘part1’: event 17
+    |
+    | 2950 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                                                         |
+    |      |                                                         (17) calling ‘cc_map_insert’ from ‘part1’
+    | 2952 |       CC_CNTR_ID( *(cntr) ) == CC_LIST ? cc_list_insert :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2953 |                             /* CC_MAP */ cc_map_insert                                       \
+    |      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2954 |     )                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2955 |     /* Function args */                                                                      \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2956 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2957 |       *(cntr),                                                                               \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2958 |       &CC_MAKE_LVAL_COPY( CC_EL_TY( *(cntr) ), (el) ),                                       \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2959 |       &CC_MAKE_LVAL_COPY( CC_KEY_TY( *(cntr) ), (key) ),                                     \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2960 |       true,                                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2961 |       CC_EL_SIZE( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2962 |       CC_LAYOUT( *(cntr) ),                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2963 |       CC_KEY_HASH( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2964 |       CC_KEY_CMPR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2965 |       CC_KEY_LOAD( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2966 |       CC_EL_DTOR( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2967 |       CC_KEY_DTOR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2968 |       CC_REALLOC_FN,                                                                         \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2969 |       CC_FREE_FN                                                                             \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2970 |     )                                                                                        \
+    |      |     ~                                                    
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+    +--> ‘cc_map_insert’: events 18-21
+           |
+           |cc.h:2223:40:
+           | 2223 | static inline cc_allocing_fn_result_ty cc_map_insert(
+           |      |                                        ^~~~~~~~~~~~~
+           |      |                                        |
+           |      |                                        (18) entry to ‘cc_map_insert’
+           |......
+           | 2239 |   if( cc_map_size( cntr ) + 1 > cc_map_cap( cntr ) * max_load )
+           |      |     ~                                   
+           |      |     |
+           |      |     (19) following ‘true’ branch...
+           | 2240 |   {
+           | 2241 |     cc_allocing_fn_result_ty result = cc_map_reserve(
+           |      |                                       ~~~~~~~~~~~~~~~
+           |      |                                       |
+           |      |                                       (21) calling ‘cc_map_reserve’ from ‘cc_map_insert’
+           | 2242 |       cntr,
+           |      |       ~~~~~                             
+           | 2243 |       cc_map_size( cntr ) + 1,
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~          
+           |      |       |
+           |      |       (20) ...to here
+           | 2244 |       el_size,
+           |      |       ~~~~~~~~                          
+           | 2245 |       layout,
+           |      |       ~~~~~~~                           
+           | 2246 |       hash,
+           |      |       ~~~~~                             
+           | 2247 |       max_load,
+           |      |       ~~~~~~~~~                         
+           | 2248 |       realloc_,
+           |      |       ~~~~~~~~~                         
+           | 2249 |       free_
+           |      |       ~~~~~                             
+           | 2250 |     );
+           |      |     ~                                   
+           |
+           +--> ‘cc_map_reserve’: events 22-23
+                  |
+                  | 2180 | static inline cc_allocing_fn_result_ty cc_map_reserve(
+                  |      |                                        ^~~~~~~~~~~~~~
+                  |      |                                        |
+                  |      |                                        (22) entry to ‘cc_map_reserve’
+                  |......
+                  | 2191 |   size_t cap = cc_map_min_cap_for_n_els( n, max_load );
+                  |      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |      |                |
+                  |      |                (23) calling ‘cc_map_min_cap_for_n_els’ from ‘cc_map_reserve’
+                  |
+                  +--> ‘cc_map_min_cap_for_n_els’: events 24-26
+                         |
+                         | 2125 | static inline size_t cc_map_min_cap_for_n_els( size_t n, double max_load )
+                         |      |                      ^~~~~~~~~~~~~~~~~~~~~~~~
+                         |      |                      |
+                         |      |                      (24) entry to ‘cc_map_min_cap_for_n_els’
+                         | 2126 | {
+                         | 2127 |   if( n == 0 )
+                         |      |     ~                 
+                         |      |     |
+                         |      |     (25) following ‘false’ branch (when ‘n != 0’)...
+                         |......
+                         | 2131 |   size_t cap = 8;
+                         |      |          ~~~          
+                         |      |          |
+                         |      |          (26) ...to here
+                         |
+                  <------+
+                  |
+                ‘cc_map_reserve’: events 27-29
+                  |
+                  | 2191 |   size_t cap = cc_map_min_cap_for_n_els( n, max_load );
+                  |      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |      |                |
+                  |      |                (27) returning to ‘cc_map_reserve’ from ‘cc_map_min_cap_for_n_els’
+                  | 2192 | 
+                  | 2193 |   if( cc_map_cap( cntr ) >= cap )
+                  |      |     ~           
+                  |      |     |
+                  |      |     (28) following ‘true’ branch...
+                  | 2194 |     return cc_make_allocing_fn_result( cntr, cc_dummy_true_ptr );
+                  |      |            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |      |            |
+                  |      |            (29) ...to here
+                  |
+           <------+
+           |
+         ‘cc_map_insert’: events 30-32
+           |
+           | 2241 |     cc_allocing_fn_result_ty result = cc_map_reserve(
+           |      |                                       ^~~~~~~~~~~~~~~
+           |      |                                       |
+           |      |                                       (30) returning to ‘cc_map_insert’ from ‘cc_map_reserve’
+           | 2242 |       cntr,
+           |      |       ~~~~~                            
+           | 2243 |       cc_map_size( cntr ) + 1,
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~         
+           | 2244 |       el_size,
+           |      |       ~~~~~~~~                         
+           | 2245 |       layout,
+           |      |       ~~~~~~~                          
+           | 2246 |       hash,
+           |      |       ~~~~~                            
+           | 2247 |       max_load,
+           |      |       ~~~~~~~~~                        
+           | 2248 |       realloc_,
+           |      |       ~~~~~~~~~                        
+           | 2249 |       free_
+           |      |       ~~~~~                            
+           | 2250 |     );
+           |      |     ~                                  
+           | 2251 | 
+           | 2252 |     if( !result.other_ptr )
+           |      |       ~                                
+           |      |       |
+           |      |       (31) following ‘true’ branch...
+           | 2253 |       return result;
+           |      |              ~~~~~~                    
+           |      |              |
+           |      |              (32) ...to here
+           |
+    <------+
+    |
+  ‘part1’: event 33
+    |
+    | 2950 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                                                         |
+    |      |                                                         (33) returning to ‘part1’ from ‘cc_map_insert’
+    | 2952 |       CC_CNTR_ID( *(cntr) ) == CC_LIST ? cc_list_insert :                                    \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2953 |                             /* CC_MAP */ cc_map_insert                                       \
+    |      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2954 |     )                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2955 |     /* Function args */                                                                      \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2956 |     (                                                                                        \
+    |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2957 |       *(cntr),                                                                               \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2958 |       &CC_MAKE_LVAL_COPY( CC_EL_TY( *(cntr) ), (el) ),                                       \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2959 |       &CC_MAKE_LVAL_COPY( CC_KEY_TY( *(cntr) ), (key) ),                                     \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2960 |       true,                                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2961 |       CC_EL_SIZE( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2962 |       CC_LAYOUT( *(cntr) ),                                                                  \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2963 |       CC_KEY_HASH( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2964 |       CC_KEY_CMPR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2965 |       CC_KEY_LOAD( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2966 |       CC_EL_DTOR( *(cntr) ),                                                                 \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2967 |       CC_KEY_DTOR( *(cntr) ),                                                                \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2968 |       CC_REALLOC_FN,                                                                         \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2969 |       CC_FREE_FN                                                                             \
+    |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | 2970 |     )                                                                                        \
+    |      |     ~                                                    
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+    |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+    |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+    | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+    |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+  ‘part1’: event 34
+    |
+    |cc.h:2946:4:
+    | 2946 |   ),                                                                                         \
+    |      |    ^
+    |      |    |
+    |      |    (34) assigned to ‘seed_map_t (* (*)[3])(int *)’ here; ‘sizeof (seed_map_t (*[3])(int *))’ is ‘24’
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+    |  715 | #define CC_CAT_2_( a, b ) a##b
+    |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+    |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+    |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+    |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+    |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+    | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+    |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+    |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+    |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+    |   62 |                                 insert(&seed_map, seed, m);
+    |      |                                 ^~~~~~
+    |
+cc.h:633:49: warning: allocated buffer size is not a multiple of the pointee's size [CWE-131] [-Wanalyzer-allocation-size]
+  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+      |                                                 ^
+cc.h:643:64: note: in definition of macro ‘CC_CAST_MAYBE_UNUSED’
+  643 | #define CC_CAST_MAYBE_UNUSED( ty, xp ) ( ( ty ){ 0 } = ( (ty)( xp ) ) )
+      |                                                                ^~
+cc.h:1045:4: note: in expansion of macro ‘CC_MAKE_LVAL_COPY’
+ 1045 |   &CC_MAKE_LVAL_COPY( CC_TYPEOF_XP( cntr ), ( (cc_allocing_fn_result_ty *)cntr )->new_cntr ), \
+      |    ^~~~~~~~~~~~~~~~~
+cc.h:2972:48: note: in expansion of macro ‘CC_FIX_HNDL_AND_RETURN_OTHER_PTR’
+ 2972 |   CC_CAST_MAYBE_UNUSED( CC_EL_TY( *(cntr) ) *, CC_FIX_HNDL_AND_RETURN_OTHER_PTR( *(cntr) ) ) \
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+  715 | #define CC_CAT_2_( a, b ) a##b
+      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+ 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+   62 |                                 insert(&seed_map, seed, m);
+      |                                 ^~~~~~
+  event 1
+    |
+    |cc.h:1896:28:
+    | 1896 | static const cc_map_hdr_ty cc_map_placeholder = { 0, 0 };
+    |      |                            ^~~~~~~~~~~~~~~~~~
+    |      |                            |
+    |      |                            (1) allocated here
+    |
+    +--> ‘part1’: event 2
+           |
+           |main.c:44:6:
+           |   44 | void part1(FILE *fp) {
+           |      |      ^~~~~
+           |      |      |
+           |      |      (2) entry to ‘part1’
+           |
+         ‘part1’: events 3-6
+           |
+           |   51 |         while (fgets(line, MAX_LINE, fp) != NULL) {
+           |      |                                          ^
+           |      |                                          |
+           |      |                                          (3) following ‘true’ branch...
+           |   52 |                 int dst_r, src_r, size_r;
+           |   53 |                 if (!strncmp(line, "seeds:", 6)) {
+           |      |                    ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |      |                    | |
+           |      |                    | (4) ...to here
+           |      |                    (5) following ‘true’ branch...
+           |   54 |                         line += 7;
+           |      |                              ~~           
+           |      |                              |
+           |      |                              (6) ...to here
+           |
+         ‘part1’: events 7-10
+           |
+           |   55 |                         while ((tok = strsep(&line, " ")) != NULL) {
+           |      |                                                           ^
+           |      |                                                           |
+           |      |                                                           (7) following ‘true’ branch (when ‘tok’ is non-NULL)...
+           |   56 |                                 if (tok[0] == '\n') break;
+           |      |                                    ~~~~~~~                 
+           |      |                                    |   |
+           |      |                                    |   (8) ...to here
+           |      |                                    (9) following ‘false’ branch...
+           |......
+           |   60 |                                 seed = atoi(tok);
+           |      |                                        ~~~~~~~~~           
+           |      |                                        |
+           |      |                                        (10) ...to here
+           |
+         ‘part1’: event 11
+           |
+           |cc.h:2951:57:
+           | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+           |      |                                                         ^
+           |      |                                                         |
+           |      |                                                         (11) inlined call to ‘cc_cmpr_int_select’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+           |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+           |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+           | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+           |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+           |  715 | #define CC_CAT_2_( a, b ) a##b
+           |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+           |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+           |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+           |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+           |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+           | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+           |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+           |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+           |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+           |   62 |                                 insert(&seed_map, seed, m);
+           |      |                                 ^~~~~~
+           |
+           +--> ‘cc_cmpr_int_select’: event 12
+                  |
+                  |cc.h:3939:74:
+                  | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+                  |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+                  |      |                                                                          |
+                  |      |                                                                          (12) following ‘true’ branch (when ‘cntr_id == 3’)...
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+                  | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+                  |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |
+                ‘cc_cmpr_int_select’: event 13
+                  |
+                  | 3939 |   return cntr_id == CC_MAP || cntr_id == CC_SET ? cc_cmpr_##name##_equal : cc_cmpr_##name##_less; \
+                  |      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+                  |      |                                                                          |
+                  |      |                                                                          (13) ...to here
+cc.h:3953:1: note: in expansion of macro ‘CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS’
+                  | 3953 | CC_DEFAULT_INTEGER_CMPR_HASH_FUNCTIONS( int, int )
+                  |      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                  |
+           <------+
+           |
+         ‘part1’: event 14
+           |
+           | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+           |      |                                                         ^
+           |      |                                                         |
+           |      |                                                         (14) inlined call to ‘cc_layout’ from ‘part1’
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+           |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+           |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+           | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+           |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+           |  715 | #define CC_CAT_2_( a, b ) a##b
+           |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+           |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+           |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+           |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+           |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+           | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+           |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+           |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+           |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+           |   62 |                                 insert(&seed_map, seed, m);
+           |      |                                 ^~~~~~
+           |
+           +--> ‘cc_layout’: events 15-16
+                  |
+                  |cc.h:965:5:
+                  |  965 |   if( cntr_id == CC_MAP )
+                  |      |     ^
+                  |      |     |
+                  |      |     (15) following ‘true’ branch (when ‘cntr_id == 3’)...
+                  |  966 |     return
+                  |  967 |       key_details.size                                                                        |
+                  |      |       ~~~~~~~~~~~~~~~~
+                  |      |                  |
+                  |      |                  (16) ...to here
+                  |
+           <------+
+           |
+         ‘part1’: event 17
+           |
+           | 2950 |     (                                                                                        \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |      |                                                         |
+           |      |                                                         (17) calling ‘cc_map_insert’ from ‘part1’
+           | 2952 |       CC_CNTR_ID( *(cntr) ) == CC_LIST ? cc_list_insert :                                    \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2953 |                             /* CC_MAP */ cc_map_insert                                       \
+           |      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2954 |     )                                                                                        \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2955 |     /* Function args */                                                                      \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2956 |     (                                                                                        \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2957 |       *(cntr),                                                                               \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2958 |       &CC_MAKE_LVAL_COPY( CC_EL_TY( *(cntr) ), (el) ),                                       \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2959 |       &CC_MAKE_LVAL_COPY( CC_KEY_TY( *(cntr) ), (key) ),                                     \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2960 |       true,                                                                                  \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2961 |       CC_EL_SIZE( *(cntr) ),                                                                 \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2962 |       CC_LAYOUT( *(cntr) ),                                                                  \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2963 |       CC_KEY_HASH( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2964 |       CC_KEY_CMPR( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2965 |       CC_KEY_LOAD( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2966 |       CC_EL_DTOR( *(cntr) ),                                                                 \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2967 |       CC_KEY_DTOR( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2968 |       CC_REALLOC_FN,                                                                         \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2969 |       CC_FREE_FN                                                                             \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2970 |     )                                                                                        \
+           |      |     ~                                                    
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+           |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+           |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+           | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+           |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+           |  715 | #define CC_CAT_2_( a, b ) a##b
+           |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+           |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+           |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+           |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+           |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+           | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+           |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+           |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+           |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+           |   62 |                                 insert(&seed_map, seed, m);
+           |      |                                 ^~~~~~
+           |
+           +--> ‘cc_map_insert’: events 18-21
+                  |
+                  |cc.h:2223:40:
+                  | 2223 | static inline cc_allocing_fn_result_ty cc_map_insert(
+                  |      |                                        ^~~~~~~~~~~~~
+                  |      |                                        |
+                  |      |                                        (18) entry to ‘cc_map_insert’
+                  |......
+                  | 2239 |   if( cc_map_size( cntr ) + 1 > cc_map_cap( cntr ) * max_load )
+                  |      |     ~                                   
+                  |      |     |
+                  |      |     (19) following ‘true’ branch...
+                  | 2240 |   {
+                  | 2241 |     cc_allocing_fn_result_ty result = cc_map_reserve(
+                  |      |                                       ~~~~~~~~~~~~~~~
+                  |      |                                       |
+                  |      |                                       (21) calling ‘cc_map_reserve’ from ‘cc_map_insert’
+                  | 2242 |       cntr,
+                  |      |       ~~~~~                             
+                  | 2243 |       cc_map_size( cntr ) + 1,
+                  |      |       ~~~~~~~~~~~~~~~~~~~~~~~~          
+                  |      |       |
+                  |      |       (20) ...to here
+                  | 2244 |       el_size,
+                  |      |       ~~~~~~~~                          
+                  | 2245 |       layout,
+                  |      |       ~~~~~~~                           
+                  | 2246 |       hash,
+                  |      |       ~~~~~                             
+                  | 2247 |       max_load,
+                  |      |       ~~~~~~~~~                         
+                  | 2248 |       realloc_,
+                  |      |       ~~~~~~~~~                         
+                  | 2249 |       free_
+                  |      |       ~~~~~                             
+                  | 2250 |     );
+                  |      |     ~                                   
+                  |
+                  +--> ‘cc_map_reserve’: events 22-23
+                         |
+                         | 2180 | static inline cc_allocing_fn_result_ty cc_map_reserve(
+                         |      |                                        ^~~~~~~~~~~~~~
+                         |      |                                        |
+                         |      |                                        (22) entry to ‘cc_map_reserve’
+                         |......
+                         | 2191 |   size_t cap = cc_map_min_cap_for_n_els( n, max_load );
+                         |      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                         |      |                |
+                         |      |                (23) calling ‘cc_map_min_cap_for_n_els’ from ‘cc_map_reserve’
+                         |
+                         +--> ‘cc_map_min_cap_for_n_els’: events 24-26
+                                |
+                                | 2125 | static inline size_t cc_map_min_cap_for_n_els( size_t n, double max_load )
+                                |      |                      ^~~~~~~~~~~~~~~~~~~~~~~~
+                                |      |                      |
+                                |      |                      (24) entry to ‘cc_map_min_cap_for_n_els’
+                                | 2126 | {
+                                | 2127 |   if( n == 0 )
+                                |      |     ~                 
+                                |      |     |
+                                |      |     (25) following ‘false’ branch (when ‘n != 0’)...
+                                |......
+                                | 2131 |   size_t cap = 8;
+                                |      |          ~~~          
+                                |      |          |
+                                |      |          (26) ...to here
+                                |
+                         <------+
+                         |
+                       ‘cc_map_reserve’: events 27-29
+                         |
+                         | 2191 |   size_t cap = cc_map_min_cap_for_n_els( n, max_load );
+                         |      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                         |      |                |
+                         |      |                (27) returning to ‘cc_map_reserve’ from ‘cc_map_min_cap_for_n_els’
+                         | 2192 | 
+                         | 2193 |   if( cc_map_cap( cntr ) >= cap )
+                         |      |     ~           
+                         |      |     |
+                         |      |     (28) following ‘true’ branch...
+                         | 2194 |     return cc_make_allocing_fn_result( cntr, cc_dummy_true_ptr );
+                         |      |            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                         |      |            |
+                         |      |            (29) ...to here
+                         |
+                  <------+
+                  |
+                ‘cc_map_insert’: events 30-32
+                  |
+                  | 2241 |     cc_allocing_fn_result_ty result = cc_map_reserve(
+                  |      |                                       ^~~~~~~~~~~~~~~
+                  |      |                                       |
+                  |      |                                       (30) returning to ‘cc_map_insert’ from ‘cc_map_reserve’
+                  | 2242 |       cntr,
+                  |      |       ~~~~~                            
+                  | 2243 |       cc_map_size( cntr ) + 1,
+                  |      |       ~~~~~~~~~~~~~~~~~~~~~~~~         
+                  | 2244 |       el_size,
+                  |      |       ~~~~~~~~                         
+                  | 2245 |       layout,
+                  |      |       ~~~~~~~                          
+                  | 2246 |       hash,
+                  |      |       ~~~~~                            
+                  | 2247 |       max_load,
+                  |      |       ~~~~~~~~~                        
+                  | 2248 |       realloc_,
+                  |      |       ~~~~~~~~~                        
+                  | 2249 |       free_
+                  |      |       ~~~~~                            
+                  | 2250 |     );
+                  |      |     ~                                  
+                  | 2251 | 
+                  | 2252 |     if( !result.other_ptr )
+                  |      |       ~                                
+                  |      |       |
+                  |      |       (31) following ‘true’ branch...
+                  | 2253 |       return result;
+                  |      |              ~~~~~~                    
+                  |      |              |
+                  |      |              (32) ...to here
+                  |
+           <------+
+           |
+         ‘part1’: event 33
+           |
+           | 2950 |     (                                                                                        \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2951 |       CC_CNTR_ID( *(cntr) ) == CC_VEC  ? cc_vec_insert  :                                    \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           |      |                                                         |
+           |      |                                                         (33) returning to ‘part1’ from ‘cc_map_insert’
+           | 2952 |       CC_CNTR_ID( *(cntr) ) == CC_LIST ? cc_list_insert :                                    \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2953 |                             /* CC_MAP */ cc_map_insert                                       \
+           |      |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2954 |     )                                                                                        \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2955 |     /* Function args */                                                                      \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2956 |     (                                                                                        \
+           |      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2957 |       *(cntr),                                                                               \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2958 |       &CC_MAKE_LVAL_COPY( CC_EL_TY( *(cntr) ), (el) ),                                       \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2959 |       &CC_MAKE_LVAL_COPY( CC_KEY_TY( *(cntr) ), (key) ),                                     \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2960 |       true,                                                                                  \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2961 |       CC_EL_SIZE( *(cntr) ),                                                                 \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2962 |       CC_LAYOUT( *(cntr) ),                                                                  \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2963 |       CC_KEY_HASH( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2964 |       CC_KEY_CMPR( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2965 |       CC_KEY_LOAD( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2966 |       CC_EL_DTOR( *(cntr) ),                                                                 \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2967 |       CC_KEY_DTOR( *(cntr) ),                                                                \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2968 |       CC_REALLOC_FN,                                                                         \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2969 |       CC_FREE_FN                                                                             \
+           |      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           | 2970 |     )                                                                                        \
+           |      |     ~                                                    
+cc.h:633:51: note: in definition of macro ‘CC_MAKE_LVAL_COPY’
+           |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+           |      |                                                   ^~
+cc.h:2947:3: note: in expansion of macro ‘CC_POINT_HNDL_TO_ALLOCING_FN_RESULT’
+           | 2947 |   CC_POINT_HNDL_TO_ALLOCING_FN_RESULT(                                                       \
+           |      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+           |  715 | #define CC_CAT_2_( a, b ) a##b
+           |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+           |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+           |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+           |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+           |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+           | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+           |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+           |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+           |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+           |   62 |                                 insert(&seed_map, seed, m);
+           |      |                                 ^~~~~~
+           |
+         ‘part1’: event 34
+           |
+           |cc.h:633:49:
+           |  633 | #define CC_MAKE_LVAL_COPY( ty, xp ) *( ty[ 1 ] ){ xp }
+           |      |                                                 ^
+           |      |                                                 |
+           |      |                                                 (34) assigned to ‘seed_map_t (* (*)[3])(int *)’ here; ‘sizeof (seed_map_t (*[3])(int *))’ is ‘24’
+cc.h:643:64: note: in definition of macro ‘CC_CAST_MAYBE_UNUSED’
+           |  643 | #define CC_CAST_MAYBE_UNUSED( ty, xp ) ( ( ty ){ 0 } = ( (ty)( xp ) ) )
+           |      |                                                                ^~
+cc.h:1045:4: note: in expansion of macro ‘CC_MAKE_LVAL_COPY’
+           | 1045 |   &CC_MAKE_LVAL_COPY( CC_TYPEOF_XP( cntr ), ( (cc_allocing_fn_result_ty *)cntr )->new_cntr ), \
+           |      |    ^~~~~~~~~~~~~~~~~
+cc.h:2972:48: note: in expansion of macro ‘CC_FIX_HNDL_AND_RETURN_OTHER_PTR’
+           | 2972 |   CC_CAST_MAYBE_UNUSED( CC_EL_TY( *(cntr) ) *, CC_FIX_HNDL_AND_RETURN_OTHER_PTR( *(cntr) ) ) \
+           |      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc.h:715:27: note: in expansion of macro ‘cc_insert_3’
+           |  715 | #define CC_CAT_2_( a, b ) a##b
+           |      |                           ^
+cc.h:716:26: note: in expansion of macro ‘CC_CAT_2_’
+           |  716 | #define CC_CAT_2( a, b ) CC_CAT_2_( a, b )
+           |      |                          ^~~~~~~~~
+cc.h:719:44: note: in expansion of macro ‘CC_CAT_2’
+           |  719 | #define CC_SELECT_ON_NUM_ARGS( func, ... ) CC_CAT_2( func, CC_N_ARGS( __VA_ARGS__ ) )( __VA_ARGS__ )
+           |      |                                            ^~~~~~~~
+cc.h:2915:26: note: in expansion of macro ‘CC_SELECT_ON_NUM_ARGS’
+           | 2915 | #define cc_insert( ... ) CC_SELECT_ON_NUM_ARGS( cc_insert, __VA_ARGS__ )
+           |      |                          ^~~~~~~~~~~~~~~~~~~~~
+cc.h:579:30: note: in expansion of macro ‘cc_insert’
+           |  579 | #define insert( ... )        cc_insert( __VA_ARGS__ )
+           |      |                              ^~~~~~~~~
+main.c:62:33: note: in expansion of macro ‘insert’
+           |   62 |                                 insert(&seed_map, seed, m);
+           |      |                                 ^~~~~~
+           |
