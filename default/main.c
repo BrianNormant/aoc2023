@@ -1,17 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define FILE_NAME "example.txt"
+#define MAX_LINE_LEN 1000
+
 void part1(FILE *fp);
 void part2(FILE *fp);
 
 int main(int argc, char *argv[]) {
-        if (argc!= 2) {
-                fprintf(stderr, "Usage: %s <input>\n", argv[0]);
-                exit(1);
-        }
         FILE *fp;
 
-        fp = fopen(argv[1], "r");
+        fp = fopen(FILE_NAME, "r");
         if (fp == NULL) {
                 perror("fopen");
                 exit(1);
@@ -20,7 +19,7 @@ int main(int argc, char *argv[]) {
         fclose(fp);
 
 
-        fp = fopen(argv[1], "r");
+        fp = fopen(FILE_NAME, "r");
         if (fp == NULL) {
                 perror("fopen");
                 exit(1);
@@ -30,3 +29,7 @@ int main(int argc, char *argv[]) {
 
         return 0;
 }
+
+
+void part1(FILE *fp) {}
+void part2(FILE *fp) {}
