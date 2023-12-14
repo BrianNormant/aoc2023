@@ -4,3 +4,4 @@ bin
 **/.unison*
 **/*.txt
 **/cc.h
+**/a.out
