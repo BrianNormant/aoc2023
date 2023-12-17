@@ -5,3 +5,4 @@ bin
 **/*.txt
 **/cc.h
 **/a.out
+**/build
