@@ -62,9 +62,9 @@ int len, start, end;
                 end = len;
         }
 
-        if (above) printf("\t|%.*s|\n", end-start, above + index + start);
-        if (cur)   printf("\t|%.*s|\n", end-start, cur   + index + start);
-        if (below) printf("\t|%.*s|\n", end-start, below + index + start);
+        // if (above) printf("\t|%.*s|\n", end-start, above + index + start);
+        // if (cur)   printf("\t|%.*s|\n", end-start, cur   + index + start);
+        // if (below) printf("\t|%.*s|\n", end-start, below + index + start);
 }
 
 
@@ -132,7 +132,7 @@ part1(FILE *fp) {
                                 sscanf(current_l+i, "%d%n", &number, &size);
                                 sum += number;
                                 memset(current_l+i, '.', size);
-                                printf("%d\n", number);
+                                // printf("%d\n", number);
                         }
                 }
 
@@ -163,9 +163,9 @@ get_gears_ratio(char *restrict cur, char *restrict above, char *restrict below, 
         pos_num1 = NULL;
         pos_num2 = NULL;
         
-        printf("\t|%.*s|\n", end-start, above + index + start);
-        printf("\t|%.*s|\n", end-start, cur   + index + start);
-        printf("\t|%.*s|\n", end-start, below + index + start);
+        // printf("\t|%.*s|\n", end-start, above + index + start);
+        // printf("\t|%.*s|\n", end-start, cur   + index + start);
+        // printf("\t|%.*s|\n", end-start, below + index + start);
 
         for (i = start; i < end; i++) {
                 if (isdigit(above[index + i])) {
@@ -185,7 +185,7 @@ get_gears_ratio(char *restrict cur, char *restrict above, char *restrict below, 
 
 found1: extend_number(&pos_num1, index+i);
         sscanf(pos_num1, "%d%n", &num1, &i);
-        printf("num1=%d\n", num1);
+        // printf("num1=%d\n", num1);
         
         assert(i != 0);
         
@@ -209,7 +209,7 @@ found1: extend_number(&pos_num1, index+i);
 
 found2: extend_number(&pos_num2, index+i);
         sscanf(pos_num2, "%d%n", &num2, &i);
-        printf("num2=%d\n", num2);
+        // printf("num2=%d\n", num2);
 
         assert(i != 0);
 
@@ -231,7 +231,7 @@ failed: sprintf(buf, "%d", num1);
         sprintf(buf, "%d", num2);
         if (pos_num2) strncpy(pos_num2, buf, strlen(buf));
 
-        printf("\x1b[31mFailed\x1b[0m\n");
+        // printf("\x1b[31mFailed\x1b[0m\n");
         return 0;
 }
 
