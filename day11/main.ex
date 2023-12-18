@@ -44,8 +44,8 @@ defmodule Solution do
                 else 0 end
                             
               {
-                x - deplx + deplx * 10,
-                y - deply + deply * 10
+                x - deplx + deplx * 100,
+                y - deply + deply * 100
               }
             end)
           end)
