@@ -3,9 +3,11 @@
 #include <string.h>
 #include <stdint.h>
 #include <assert.h>
+#include <limits.h>
 
 
-#define FILE_NAME "example.txt"
+// #define FILE_NAME "example.txt"
+#define FILE_NAME "puzzle.txt"
 #define MAX_LINE_LEN 1000
 
 void part1(FILE *fp);
@@ -51,13 +53,17 @@ const direction_t chr_to_dir[] = {
         ['D'] = DOWN,
         ['L'] = LEFT,
         ['R'] = RIGHT,
+        ['0'] = RIGHT,
+        ['1'] = DOWN,
+        ['2'] = LEFT,
+        ['3'] = UP,
 };
 
-int shoelace_triangle(const point_t * points, int nb_points) {
-        int m00,m01,
-            m10,m11;
+uint64_t shoelace_triangle(const point_t * points, int nb_points) {
+        uint64_t m00,m01,
+                 m10,m11;
 
-        int twoA = 0;
+        uint64_t twoA = 0;
         for (int i = 0; i < nb_points; i++) {
                 m00 = points[i].x;
                 m10 = points[i].y;
@@ -80,6 +86,7 @@ void part1(FILE *fp) {
         int nb_points = 0;
 
         int posx, posy; direction_t last_dir;
+        int distance = 0;
         posx = posy = MAX_LINE_LEN;
         last_dir = FIRST;
         
@@ -93,8 +100,8 @@ void part1(FILE *fp) {
                 dir = chr_to_dir[(int)dirc];
                 if (dir != last_dir) {
                         points[nb_points++] = (point_t){
-                                posx + (posx >= MAX_LINE_LEN?1:0),
-                                posy + (posy >= MAX_LINE_LEN?1:0),
+                                posx,
+                                posy,
                         };
 
                 }
@@ -105,16 +112,60 @@ void part1(FILE *fp) {
                 case RIGHT: posy += dist; break;
                 default: assert(0);
                 }
+                distance += dist;
                 last_dir = dir;
                 line = line_buf;
         }
-        // assert(posx == MAX_LINE_LEN && posy == MAX_LINE_LEN);
-
-        for (int i = 0; i < nb_points; i++) {
-                printf("(%d, %d)\n", points[i].x, points[i].y);
-        }
+        assert(posx == MAX_LINE_LEN && posy == MAX_LINE_LEN);
 
         int solution = shoelace_triangle(points, nb_points);
+        solution += distance/2 + 1;
         printf("Solution: %d\n", solution);
 }
-void part2(FILE *fp) {}
+
+
+void part2(FILE *fp) {
+        char line_buf[MAX_LINE_LEN];
+        char *line = line_buf;
+
+        point_t points[1000];
+        int nb_points = 0;
+
+        uint64_t posx, posy; direction_t last_dir;
+        uint64_t distance = 0;
+        posx = posy = UINT64_MAX/2;
+        last_dir = FIRST;
+        
+        while (fgets(line, MAX_LINE_LEN, fp) != NULL) {
+                uint32_t dist;
+                char dirc;
+                direction_t dir;
+
+                line = strchr(line, '#');
+
+                assert( sscanf(line, "#%5X%c", &dist, &dirc) == 2);
+                printf("%c %d\n", dirc, dist);
+                dir = chr_to_dir[(int)dirc];
+                if (dir != last_dir) {
+                        points[nb_points++] = (point_t){
+                                posx,
+                                posy,
+                        };
+
+                }
+                switch (dir) {
+                case UP: posx += dist; break;
+                case DOWN: posx -= dist; break;
+                case LEFT: posy -= dist; break;
+                case RIGHT: posy += dist; break;
+                default: assert(0);
+                }
+                distance += dist;
+                last_dir = dir;
+                line = line_buf;
+        }
+
+        uint64_t solution = shoelace_triangle(points, nb_points);
+        solution += distance/2 + 1;
+        printf("Solution: %lu\n", solution);
+}
