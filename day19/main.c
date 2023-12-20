@@ -10,8 +10,11 @@
 #define MAX_RULE 10
 #define MAX_WORKFLOWS 100000
 
+#define MIN(a, b) ((a) < (b)? (a) : (b))
+#define MAX(a, b) ((a) > (b)? (a) : (b))
+
 void part1(FILE *fp);
-void part2(FILE *fp);
+void part2();
 
 int main(void) {
         FILE *fp;
@@ -24,14 +27,7 @@ int main(void) {
         part1(fp);
         fclose(fp);
 
-
-        fp = fopen(FILE_NAME, "r");
-        if (fp == NULL) {
-                perror("fopen");
-                exit(1);
-        }
-        part2(fp);
-        fclose(fp);
+        part2();
 
         return 0;
 }
@@ -67,7 +63,6 @@ const rating_t str_to_rating[] = {
 };
 
 typedef struct workflow_t workflow_t;
-
 
 typedef struct {
         rating_t rate;
@@ -112,11 +107,10 @@ int workflow_apply(workflow_t * workflow, uint32_t part[4]) {
         return -1;
 }
 
-
+workflow_t * workflow_in = NULL;
 void part1(FILE *fp) {
         char line_buf[MAX_LINE_LEN];
         char *line = line_buf;
-        workflow_t * workflow_in = NULL;
 
 
         // First get all workflows and insert them in the map
@@ -193,15 +187,92 @@ void part1(FILE *fp) {
 
         printf("Solution 1: %d\n", solution);
 }
-void part2(FILE *fp) {
-        char line_buf[MAX_LINE_LEN];
-        char *line = line_buf;
 
+// recursive function.
+// for each rule in the workflow, test each branch and return the number of accepted possibilities
+uint64_t count_valid(workflow_t * workflow,
+                uint32_t start_i[4], uint32_t end_i[4]) {
+        
+        // make a copy of the arrays, they each live on the stack
+        // so that further recursive call don't change the value of the current call
+        uint32_t start[4], end[4];
+        uint32_t start_cpy[4], end_cpy[4];
+        memcpy(start, start_i, sizeof(uint32_t) * 4);
+        memcpy(end, end_i, sizeof(uint32_t) * 4);
 
-        while (fgets(line, MAX_LINE_LEN, fp) != NULL) {
-                line = line_buf;
+        printf("Recursion with [ x={%d - %d}, m={%d - %d}, a={%d - %d}, s={%d - %d}]\n", start[0], end[0], start[1], end[1], start[2], end[2], start[3], end[3]);
+
+        uint64_t valid = 0;
+        for (uint32_t i = 0; i < workflow->rules_len; i++) {
+                rule_t rule = workflow->rules[i];
+
+                if (rule.comp_f == comp_gt) {
+                        if (rule.next == REJECTED) goto skip1;
+                        memcpy(start_cpy, start, sizeof(uint32_t) * 4);
+
+                        memcpy(end_cpy, end, sizeof(uint32_t) * 4);
+                        start_cpy[rule.rate] = MAX(start_cpy[rule.rate], rule.v+1);
+                        end_cpy[rule.rate] = MAX(end_cpy[rule.rate], rule.v+1);
+
+                        if (rule.next == ACCEPTED) {
+                                uint64_t pls = 1;
+                                for (int j = 0; j < 4; j++) {
+                                        assert (end_cpy[j] - start_cpy[j] >= 0);
+                                        pls *= end_cpy[j] - start_cpy[j] + 1;
+                                }
+                                valid += pls;
+                        } else {
+                                valid += count_valid(rule.next, start_cpy, end_cpy);
+                        }
+skip1:
+                        // those who fail the condition continue in the workflow
+                        end[rule.rate] = MIN(end[rule.rate], rule.v);
+                        start[rule.rate] = MIN(start[rule.rate], rule.v);
+                } else if (rule.comp_f == comp_lt) {
+                        if (rule.next == REJECTED) goto skip2;
+                        memcpy(start_cpy, start, sizeof(uint32_t) * 4);
+                        memcpy(end_cpy, end, sizeof(uint32_t) * 4);
+                        end_cpy[rule.rate] = MIN(end_cpy[rule.rate], rule.v-1);
+                        start_cpy[rule.rate] = MIN(start_cpy[rule.rate], rule.v-1);
+
+                        if (rule.next == ACCEPTED) {
+                                uint64_t pls = 1;
+                                for (int j = 0; j < 4; j++) {
+                                        assert (end_cpy[j] - start_cpy[j] >= 0);
+                                        pls *= end_cpy[j] - start_cpy[j] + 1;
+                                }
+                                valid += pls;
+                        } else {
+                                valid += count_valid(rule.next, start_cpy, end_cpy);
+                        }
+skip2:
+                        // those who fail the condition continue in the workflow
+                        end[rule.rate] = MAX(end[rule.rate], rule.v);
+                        start[rule.rate] = MAX(start[rule.rate], rule.v);
+                } else if (rule.comp_f == comp_no) {
+                        if (rule.next == ACCEPTED) {
+                                uint64_t pls = 1;
+                                for (int j = 0; j < 4; j++) {
+                                        assert (end[j] - start[j] >= 0);
+                                        pls *= end[j] - start[j] + 1;
+                                }
+                                return valid + pls;
+                        } else if (rule.next == REJECTED) {
+                                return valid;
+                        } else {
+                                return valid + count_valid(rule.next, start, end);
+                        }
+                } else assert(0);
         }
+        assert(0);
+        return -1;
+}
 
-        int solution = 0;
-        printf("Solution 2: %d\n", solution);
+void part2() {
+
+        // Part 1 already have the workflows in the hashmap
+        uint32_t start[4] = {1, 1, 1, 1};
+        uint32_t end[4] = {4000, 4000, 4000, 4000};
+        uint64_t solution = count_valid(workflow_in, start, end);
+        printf("Solution 2: %li\n", solution);
 }
